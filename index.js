@@ -1,6 +1,7 @@
 const repoContext = require('./repository/repository-wrapper');
 const express = require('express');
 const { updateSong } = require('./repository/music-repository');
+const {validateSong} = require('./middleware/songs-validation');
 const app = express();
 
 app.use(express.json());
@@ -24,7 +25,7 @@ app.get('/api/songs/:id',(req,res) => {
 });
 
 //POST a new song
-app.post('/api/songs',(req,res) => {
+app.post('/api/songs', [validateSong], (req,res) => {
     let newSong = req.body;
     let addedSong = repoContext.songs.createSong(newSong);
     res.send(addedSong);
@@ -32,7 +33,7 @@ app.post('/api/songs',(req,res) => {
 
 //PUT endpoint updating exisiting song
 
-app.put('/api/songs/:id', (req,res) => {
+app.put('/api/songs/:id', [validateSong],(req,res) => {
     let id = req.params.id;
     let songToUpdate = req.body;
     let updatedSong = repoContext.songs.updateSong(id, songToUpdate);
