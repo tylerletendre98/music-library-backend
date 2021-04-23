@@ -1,6 +1,5 @@
 const repoContext = require('./repository/repository-wrapper');
 const express = require('express');
-const { updateSong } = require('./repository/music-repository');
 const {validateSong} = require('./middleware/songs-validation');
 const cors = require('cors');
 const app = express();
@@ -8,7 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
 app.listen(5000, function(){
     console.log('Server started. Listening on port 5000');
 });
@@ -27,7 +25,7 @@ app.get('/api/songs/:id',(req,res) => {
 });
 
 //POST a new song
-app.post('/api/songs', [validateSong], (req,res) => {
+app.post('/api/songs',[validateSong], (req,res) => {
     let newSong = req.body;
     let addedSong = repoContext.songs.createSong(newSong);
     res.send(addedSong);
